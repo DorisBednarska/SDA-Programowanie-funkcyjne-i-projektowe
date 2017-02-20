@@ -16,7 +16,7 @@ public class Application {
         List<AbstractEmployee> employeeList = new ArrayList<>();
         employeeList.add(new AbstractEmployee("Doris", "Bednarska", 1999, "Java"));
         employeeList.add(new AbstractEmployee("Adam", "Nowak", 2500, "Java"));
-        employeeList.add(new AbstractEmployee("Michał", "Lagoda", 1750, "HR"));
+        employeeList.add(new AbstractEmployee("Michał", "Nowacki", 1750, "HR"));
         employeeList.add(new AbstractEmployee("Patryk", "Kowalski", 3500, "Java"));
         employeeList.add(new AbstractEmployee("Marcin", "Wisniewski", 4500, "Java"));
 
@@ -71,6 +71,8 @@ public class Application {
                 .max((e1, e2) -> e1.getSalary() > e2.getSalary() ? 1 : -1)
                 .get();
         System.out.println(richestEmployee);
+        //sortowanie po lastname
+
         //wyswietlamy employee ktory zarabia najmniej
         System.out.println();
         AbstractEmployee poorestEmployee = employeeList.stream()
@@ -90,13 +92,13 @@ public class Application {
         System.out.println(tmpList);
     }
 
-    public static Map<String, List<AbstractEmployee>> listToMap(List<AbstractEmployee> employees){
+    public static Map<String, List<AbstractEmployee>> listToMap(List<AbstractEmployee> employees) {
         Map<String, List<AbstractEmployee>> map = new HashMap<>();
-        for (AbstractEmployee employee : employees){
-            if (map.containsKey(employee.getDepartment())){
+        for (AbstractEmployee employee : employees) {
+            if (map.containsKey(employee.getDepartment())) {
                 List<AbstractEmployee> listOfEmployees = map.get(employee.getDepartment());
                 listOfEmployees.add(employee);
-            }else{
+            } else {
                 ArrayList<AbstractEmployee> listOfEmployeees = new ArrayList<>();
                 listOfEmployeees.add(employee);
                 map.put(employee.getDepartment(), listOfEmployeees);
