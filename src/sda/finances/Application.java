@@ -1,5 +1,6 @@
 package sda.finances;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +32,86 @@ public class Application {
                             .forEach(product -> System.out.println(product));
                 });
         //3. Wyswietlamy tylko banany
-        //4.
+        double banan = expenses.stream()
+                .mapToDouble(expense -> expense.getProducts()
+                        .stream()
+                        .filter(product -> product.getName().equals("banan"))
+                        .mapToDouble(product -> product.getUnitPrice() * product.getAmount())
+                        .sum()
+                )
+                .sum();
+        System.out.println(banan);
+        //4. Suma cen wszystkich produktów spozywczych
+        double spozywcze = expenses.stream()
+                .filter(expense -> expense.getType().equals("spozywcze"))
+                .mapToDouble(expense -> expense.getPrice())
+                .sum();
+        System.out.println(spozywcze);
+        //5.Produkty kupione przed 19 lutym
+        System.out.println();
+        expenses.stream()
+                .filter(expense -> expense.getDate().isBefore(LocalDate.of(2017, 2, 19)))
+                .forEach(expense -> expense.getProducts()
+                        .forEach(product -> System.out.println(product)));
+        //6.Wyswietlic wydatki dla konkretnego dnia (ilosc kupionych produktow, ilosc wydanych pieniedzy)
+        System.out.println();
+        System.out.println(expenses.stream()
+                .filter(expense -> expense.getDate().isEqual(LocalDate.of(2017, 2, 21)))
+                .mapToDouble(expense -> expense.getPrice())
+                .sum());
+        //6.1.Wyswietlic wydatki na piwo dla konkretnego dnia
+        System.out.println();
+        System.out.println(expenses.stream()
+                .filter(expense -> expense.getDate().isEqual(LocalDate.of(2017, 2, 21)))
+                .mapToDouble(expense -> expense.getProducts()
+                        .stream()
+                        .filter(product -> product.getName().equals("piwo"))
+                        .mapToDouble(product -> product.getUnitPrice() * product.getAmount())
+                        .sum())
+                .sum());
+        //7.Zsumowac calkowita kwote wydana na produkty zaczynajace sie na p
+        System.out.println();
+        double startsWithP = expenses.stream()
+                .mapToDouble(expense -> expense.getProducts()
+                        .stream()
+                        .filter(product -> product.getName().startsWith("p"))
+                        .mapToDouble(product -> product.getUnitPrice() * product.getAmount())
+                        .sum()
+                )
+                .sum();
+        System.out.println(startsWithP);
+        //8. Zsumowac koszt produktow spozywczych, ktore kupilismy w parzystych ilosciach
+        System.out.println();
+        System.out.println(expenses.stream()
+                .filter(expense -> expense.getType().equals("spozywcze"))
+                .mapToDouble(expense -> expense.getProducts()
+                        .stream()
+                        .filter(product -> product.getAmount() % 2 == 0)
+                        .mapToDouble(product -> product.getUnitPrice() * product.getAmount())
+                        .sum())
+                .sum());
+        //9. Z kazdego expensa wyswietlic produkt za ktorego zaplacilismy najwiecej (amount * unitPrice)
+        System.out.println();
+        expenses.stream()
+                .map(expense -> expense.getProducts()
+                        .stream()
+                        .max((e1, e2) ->
+                                (e1.getUnitPrice() * e1.getAmount()) > (e2.getAmount() * e2.getUnitPrice()) ? 1 : -1)
+                        .get())
+                .forEach(product -> System.out.println(product));
+
+    //10. Wyswietlic najdrozszy produkt z wszystkich expensow
+        System.out.println();
+        System.out.println(expenses.stream()
+                .map(expense -> expense.getProducts()
+                        .stream()
+                        .max((e1, e2) ->
+                                (e1.getUnitPrice() * e1.getAmount()) > (e2.getAmount() * e2.getUnitPrice()) ? 1 : -1)
+                        .get())
+                .max((e1, e2) ->
+                        (e1.getUnitPrice() * e1.getAmount()) > (e2.getAmount() * e2.getUnitPrice()) ? 1 : -1)
+                .get());
+
     }
 
     private static List<Expense> init() {
@@ -51,7 +131,7 @@ public class Application {
         products2.add(new Product("nakretki", 1, 3));
         products2.add(new Product("walek", 1, 3));
 
-        Expense expense2 = new Expense("budowlane", products2, 2017, 2, 19);
+        Expense expense2 = new Expense("budowlane", products2);
 
         List<Product> products3 = new ArrayList<>();
         products3.add(new Product("aspiryna", 1, 3));
